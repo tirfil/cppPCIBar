@@ -25,6 +25,7 @@ class pci_bar
 {
 	public:
 		pci_bar(unsigned int bus, unsigned int slot, unsigned int func, unsigned int bar);
+		pci_bar(unsigned int vendorid, unsigned int deviceid, unsigned int bar);
 		~pci_bar();
 		int pci_write(unsigned int address, uint8_t   data);
 		int pci_write(unsigned int address, uint16_t  data);
@@ -32,6 +33,7 @@ class pci_bar
 		int pci_read (unsigned int address, uint8_t*  data);
 		int pci_read (unsigned int address, uint16_t* data);
 		int pci_read (unsigned int address, uint32_t* data);
+		pciaddr_t get_base_address();
 		
 	private:
 		int pci_bar_config(unsigned int bus, unsigned int slot, unsigned int func, unsigned int bar);
@@ -41,5 +43,7 @@ class pci_bar
 		u32 m_size;
 		u32 m_64;
 		int m_bar;
+		u32 m_pagesize;
+		u32 m_pageoffset;
 };
 
