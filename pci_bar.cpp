@@ -10,6 +10,7 @@ pci_bar::pci_bar(unsigned int bus, unsigned int slot, unsigned int func, unsigne
              printf("ERROR: Must be run as root\n");
              exit(1);
         }
+		m_pagesize = sysconf(_SC_PAGE_SIZE);
         
 		m_fd = open ("/dev/mem", O_RDWR | O_SYNC);
 		
@@ -26,7 +27,6 @@ pci_bar::pci_bar(unsigned int bus, unsigned int slot, unsigned int func, unsigne
 		}	
 		
 		m_bar = bar;
-		m_pagesize = sysconf(_SC_PAGE_SIZE);
 }
 
 pci_bar::pci_bar(unsigned int vendorid, unsigned int deviceid, unsigned int bar)
@@ -40,6 +40,7 @@ pci_bar::pci_bar(unsigned int vendorid, unsigned int deviceid, unsigned int bar)
              printf("ERROR: Must be run as root\n");
              exit(1);
         }
+		m_pagesize = sysconf(_SC_PAGE_SIZE);
         
 		m_fd = open ("/dev/mem", O_RDWR | O_SYNC);
 		
@@ -71,7 +72,6 @@ pci_bar::pci_bar(unsigned int vendorid, unsigned int deviceid, unsigned int bar)
 		}	
 		
 		m_bar = bar;
-		m_pagesize = sysconf(_SC_PAGE_SIZE);
 }
 
 pci_bar::~pci_bar()
@@ -91,7 +91,6 @@ pci_bar::pci_bar_config(unsigned int bus, unsigned int slot, unsigned int func, 
     pciaddr_t mask;
     pciaddr_t address;
     u32 base_address_register;
-    pciaddr_t pagestart; 
 
     pacc = pci_alloc();		/* Get the pci_access structure */
     
@@ -142,9 +141,13 @@ pci_bar::pci_bar_config(unsigned int bus, unsigned int slot, unsigned int func, 
 		m_base = m_base | ((pdev->base_addr[bar+1] & PCI_ADDR_MEM_MASK) << 32 );
 	}
 
+
+
+
 	m_pageoffset = m_base % m_pagesize;
+	printf("m_base = %08lx m_pagesize = %08lx m_pageoffset = %08lx\n", m_base,m_pagesize,m_pageoffset);
 	m_base = m_base - m_pageoffset;
-	printf("Page %04x - Offset %04x\n",m_base,m_pageoffset);
+	printf("Page %08lx - Offset %08lx\n",m_base,m_pageoffset);
 	
 	// check size
 	address = PCI_BASE_ADDRESS_0 + 4*bar;	

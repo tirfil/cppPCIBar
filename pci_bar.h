@@ -43,7 +43,7 @@ class pci_bar
 		u32 m_size;
 		u32 m_64;
 		int m_bar;
-		u32 m_pagesize;
-		u32 m_pageoffset;
+		pciaddr_t m_pagesize;
+		pciaddr_t m_pageoffset;
 };
 
